@@ -1,0 +1,43 @@
+{
+  /*
+   * Google Calendar Event Template
+   * Placeholders in {brackets} match column names in the "Teacher Contact" sheet.
+   * 
+   * Available variables from Teacher Contact:
+   *  - {First Name}
+   *  - {Last Name}
+   *  - {Pronouns}
+   *  - {Email Address}
+   *  - {Bio/Description}
+   * 
+   * Additional script-provided variables:
+   *  - {date}: ISO format date (YYYY-MM-DD)
+   *  - {time}: Start time (e.g., "7:00 am")
+   *  - {day_of_week}: Full name of the day (e.g., "Thursday")
+   */
+  "summary": "10-Minute Guided Session: {First Name} {Last Name}",
+  "description": "Guided session with {First Name} {Last Name} ({Pronouns}).\n\nBio: {Bio}",
+  "start": {
+    "dateTime": "{date}T{time_iso}:00",
+    "timeZone": "America/New_York" // EST
+  },
+  "end": {
+    "dateTime": "{date}T{end_time_iso}:00", // 10 minutes after start
+    "timeZone": "America/New_York"
+  },
+  "attendees": [
+    {
+      "email": "{Email Address}",
+      "responseStatus": "needsAction"
+    }
+  ],
+  "reminders": {
+    "useDefault": false,
+    "overrides": [
+      {
+        "method": "popup",
+        "minutes": 10
+      }
+    ]
+  }
+}
