@@ -1,7 +1,5 @@
 # Google API Credentials
-credentials.json
-token.json
-created_events.csv
+.credentials/
 
 # Python
 __pycache__/
@@ -9,3 +7,6 @@ __pycache__/
 .env
 *.py[cod]
 *$py.class
+
+# Logs
+logs/
