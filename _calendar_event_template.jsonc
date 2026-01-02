@@ -16,7 +16,8 @@
    *  - {day_of_week}: Full name of the day (e.g., "Thursday")
    */
   "summary": "10-Minute Guided Session: {First Name} {Last Name}",
-  "description": "Guided session with {First Name} {Last Name} ({Pronouns}).\n\nBio: {Bio}",
+  "description": "Guided session with {First Name} {Last Name} ({Pronouns}).\n\nBio: {Bio}\n\nJoin Zoom Meeting\nhttps://us06web.zoom.us/j/81440617020?pwd=k75vZNk4EuZoDzyU0gVekWzNHg0ilR.1\nMeeting ID: 814 4061 7020\nPasscode: 485638\n---\nOne tap mobile\n+16465588656,,81440617020#,,,,*485638# US (New York)\n+16469313860,,81440617020#,,,,*485638# US\n---\nDial by your location\n• +1 646 558 8656 US (New York)\n\nMeeting ID: 814 4061 7020\nPasscode: 485638\nFind your local number: https://us06web.zoom.us/u/kwj4RJSbb",
+  "location": "https://us06web.zoom.us/j/81440617020?pwd=k75vZNk4EuZoDzyU0gVekWzNHg0ilR.1",
   "start": {
     "dateTime": "{date}T{time_iso}:00",
     "timeZone": "America/New_York" // EST
@@ -31,6 +32,7 @@
       "responseStatus": "needsAction"
     }
   ],
+  "guestsCanModify": true,
   "reminders": {
     "useDefault": false,
     "overrides": [
