@@ -1,61 +1,71 @@
 # Google Calendar Spreadsheet Sync
 
-A Python-based utility to synchronize teacher signup data from a Google Spreadsheet to a Google Calendar. It features a customizable JSONC template for event details, a comprehensive preview system, and automated event tracking for easy cleanup.
+A Python-based utility to synchronize teacher signup data from a Google Spreadsheet to a Google Calendar. This project streamlines the process of creating calendar events based on spreadsheet signups, with built-in overlap detection and customizable event templates.
 
-## Key Features
-- **CSV Export**: Automatically records created event names and IDs to `created_events.csv`.
-- **User Confirmation**: Displays a preview table of all events and asks for approval before calling the API.
-- **Event Limiting**: Use the `--limit <N>` flag to run a live test with a small sample of events.
-- **Easy Cleanup**: Use `event_delete.py` to remove events tracked in the CSV.
-- **Efficient Mapping**: Pre-fetches teacher contact info to minimize API calls and maps variables directly from "Teacher Contact" column headers.
-- **Detailed Errors**: Reports unmatched teachers with their exact grid location (e.g., `R5C3`).
-- **Timezone Awareness**: Start times are parsed from column headers, focusing on EST.
+## 🚀 Primary Workflow: Jupyter Notebook
 
-## Prerequisites
+The recommended way to use this project is through the **[sync_scheduler.ipynb](file:///Users/stephenholsenbeck/Documents/Python/30-day_scheduler/sync_scheduler.ipynb)** notebook. It provides an interactive, step-by-step interface for the entire synchronization process.
+
+### Notebook Steps:
+
+1.  **Setup and Authentication**: Initializes Google API services (Sheets and Calendar) and handles OAuth2 authentication.
+2.  **Fetch Event Data**: Pulls signup and teacher contact information from your Google Sheet.
+3.  **Overlap Detection**: Automatically syncs with the calendar to identify events that have already been created, preventing duplicates.
+4.  **User Review and Pruning**: Displays a preview of pending events and allows you to interactively remove any overlaps before proceeding.
+5.  **Event Creation**: Formats events using a template and creates them on the calendar, saving progress incrementally.
+6.  **Cleanup (Optional)**: Provides a quick way to delete all events created in the current session if needed.
+
+---
+
+## 📋 Prerequisites
+
 - Python 3.x
-- Google Cloud Project with Sheets and Calendar APIs enabled.
-- `credentials.json` placed in the project root.
+- Google Cloud Project with **Google Sheets API** and **Google Calendar API** enabled.
+- `credentials.json` placed in the `.credentials/` directory.
 
-## Setup
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🛠 Setup
 
-## Usage
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### 1. Initial Authentication & Test
-Since this is the first run, the script needs you to authorize access to your Google account.
-Run the script for a single teacher to authorize and see a preview:
+2.  **Configuration**:
+    - `SPREADSHEET_ID`: Set in the first cell of the notebook.
+    - `CALENDAR_ID`: Set in the first cell of the notebook.
+    - `_calendar_event_template.jsonc`: Customize the event body using `{Variable}` notation.
+
+## 📖 Alternative: CLI Usage (Advanced)
+
+While the notebook is recommended, you can still run the synchronization via the command line:
+
+**Test Run (No API calls):**
 ```bash
-python3 sync_scheduler.py --test
-```
-A browser window will open for OAuth2 authorization. Once authorized, the script will perform a **Dry Run**.
-
-### 2. Create Real Events
-Run the script with the `--run` flag to create events. You will be prompted to confirm the events shown in the preview table:
-```bash
-python3 sync_scheduler.py --run
-```
-
-### 3. Verify with a Limited Run
-To create just a few events to verify they appear correctly in your calendar:
-```bash
-python3 sync_scheduler.py --run --limit 2
+python3 src/sync_scheduler.py --test
 ```
 
-### 4. Cleanup / Delete Events
-To remove the events created in a previous run:
+**Live Run:**
 ```bash
-python3 event_delete.py
+python3 src/sync_scheduler.py --run
 ```
-This reads `created_events.csv`, deletes the events from your calendar, and removes the CSV file.
 
-## Configuration
-- `SPREADSHEET_ID`: Update in `sync_scheduler.py` if using a different sheet.
-- `CALENDAR_ID`: Set to `primary` or a specific Calendar ID.
-- `_calendar_event_template.jsonc`: Customize the event body, summary, and location using `{Variable}` notation.
+**Limited Run:**
+```bash
+python3 src/sync_scheduler.py --run --limit 5
+```
 
-## Troubleshooting
-- **Missing Columns**: Ensure your "Teacher Contact" sheet has headers that match the variables in the template (e.g., `First Name`, `Last Name`, `Bio`).
-- **Permissions**: If you get a "Scope" error, delete `token.json` and run the script again.
+## 📁 Directory Structure
+
+- `sync_scheduler.ipynb`: Primary interactive workflow.
+- `src/`: Core logic modules.
+  - `sync_scheduler.py`: Event formatting and API interaction.
+  - `google_sheets_data.py`: Data retrieval from Google Sheets.
+  - `overlap_detection.py`: Logic for identifying existing events.
+- `logs/`: Contains `created_events.csv` for tracking and historical record-keeping.
+- `.credentials/`: Stores your `credentials.json` and OAuth tokens.
+
+## ❓ Troubleshooting
+
+- **Missing Columns**: Ensure your "Teacher Contact" sheet headers match the variables in your `_calendar_event_template.jsonc`.
+- **Permissions**: If you encounter authentication errors, delete the `.json` token files in `.credentials/` and re-run the setup cell.
+- **Jupyter Environment**: Ensure you have a Jupyter kernel installed (`pip install ipykernel`).
