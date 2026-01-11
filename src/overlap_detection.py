@@ -1,24 +1,7 @@
 import os
 import pandas as pd
 import datetime
-
-def fetch_calendar_events(service, calendar_id, time_min=None):
-    """
-    Fetches events from the specified Google Calendar.
-    """
-    if time_min is None:
-        # Default to fetches from the beginning of the current month or similar? 
-        # Let's use 30 days ago to be safe.
-        now = datetime.datetime.utcnow()
-        time_min = (now - datetime.timedelta(days=30)).isoformat() + 'Z'
-        
-    events_result = service.events().list(
-        calendarId=calendar_id, 
-        timeMin=time_min,
-        singleEvents=True,
-        orderBy='startTime'
-    ).execute()
-    return events_result.get('items', [])
+from utils_calendar_general import fetch_calendar_events
 
 def update_created_events_csv(calendar_service, calendar_id, csv_path):
     """
@@ -48,10 +31,6 @@ def check_overlaps(df_pending, df_created):
     if df_created.empty:
         return pd.Series([False] * len(df_pending))
 
-    # Normalize 'Begin' for comparison if needed (e.g., stripping TZ or startswith)
-    # df_pending['Begin'] is naive ISO from notebook logic
-    # df_created['Begin'] from calendar has TZ offset (e.g. -05:00)
-    
     def is_match(row):
         # Summary match AND Start string match (start of string to avoid TZ issues if simple)
         # Note: df_pending['Begin'] is like "2026-01-01T07:00:00"

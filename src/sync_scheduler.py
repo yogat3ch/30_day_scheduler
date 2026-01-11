@@ -4,12 +4,9 @@ import json
 import datetime
 import pandas as pd
 import backoff
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from jsonc_parser.parser import JsoncParser
+from utils_calendar_general import get_google_services, create_calendar_event
 
 # --- Configuration ---
 SPREADSHEET_ID = '10Z993MrZHH0Da_pXEFZoo0MBdxKhf619fZSuuvaAdlQ'
@@ -27,22 +24,8 @@ CREDS_PATH = '.credentials/credentials.json'
 
 # --- Helper Functions ---
 
-def get_google_services():
-    creds = None
-    if os.path.exists(TOKEN_PATH):
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(TOKEN_PATH, 'w') as token:
-            token.write(creds.to_json())
-    
-    sheets_service = build('sheets', 'v4', credentials=creds)
-    calendar_service = build('calendar', 'v3', credentials=creds)
-    return sheets_service, calendar_service
+def get_services():
+    return get_google_services(TOKEN_PATH, CREDS_PATH, SCOPES)
 
 def parse_time_est(header_str):
     """
@@ -112,18 +95,17 @@ def prepare_event_body(row, template_text):
     
     return JsoncParser.parse_str(event_json_str)
 
-@backoff.on_exception(backoff.expo, HttpError, max_tries=5)
 def create_event(service, calendar_id, event_body):
     """
-    Inserts an event into the Google Calendar with exponential backoff.
+    Inserts an event into the Google Calendar using the shared utility.
     """
-    return service.events().insert(calendarId=calendar_id, body=event_body).execute()
+    return create_calendar_event(service, calendar_id, event_body)
 
 def main(dry_run=True, test_teacher=None, limit=None):
     if dry_run:
         print("\n[DRY RUN MODE] Use --run to actually create events.")
     
-    sheets_service, calendar_service = get_google_services()
+    sheets_service, calendar_service = get_services()
 
     # 0. Validate Template early
     template_str = validate_template(TEMPLATE_FILE)
