@@ -1,0 +1,22 @@
+<BACKGROUND_INFORMATION>
+This guidance is for projects that use Google Apps Script. Google Apps Script uses a set of script files. 
+</BACKGROUND_INFORMATION>
+
+<INSTRUCTIONS>
+# Code Guidelines
+All functional code must be written in Javascript with .js file extensions using ES6+ syntax for the V8 runtime with JSDoc documentation strings for all functions. 
+
+# Library Guidelines
+If specific Javascript libraries are required, they must be documented in the npm package.json file. Libraries should be used sparingly and only when necessary, containing all functional code within the .js files is preferred. 
+
+# File Organization Guidelines
+All supporting functions, including their JSDoc documentation strings, must be written in a single .js file named @utils.js. The main .gs file should only contain the main function and any necessary function calls. 
+</INSTRUCTIONS>
+
+<TOOL_GUIDANCE>
+All Agent tools are available in the .gemini/GAS folder.
+</TOOL_GUIDANCE>
+
+<OUTPUT_DESCRIPTION>
+All output in a Google Apps Script project will conform to general guidelines specified in the @.gemini/GEMINI.md file.
+</OUTPUT_DESCRIPTION>
