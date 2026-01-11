@@ -1,0 +1,390 @@
+/*The selection on this page is an html formatted year long course schedule. It's divided into sections with each section beginning with a `strong` tag wrapping the month names over which the section spans, and a Section Title on a single line. The next line has "Book Selection:" and the Name of the book, also wrapped in `strong` tags. The rest of the section is descriptions of events on individual lines, each event description begins with the Date in the form of month name, sometimes abbreviated, followed by the day of the month (eg"Feb 16th"), a colon, then a title of the event, followed by it's time window in the format "2pm-5pm". Occasionally, this will be followed by Further information. 
+
+Can we parse this information into a JSON format as follows:
+- `summary`: the title of the event
+- `start.dateTime`: combine the Date, and the start time (left side of time window)
+- `end.dateTime`: combine the Date, and the end time (right side of the time window)
+ - `location`: the text "See Email for Zoom link"
+ - `description`: html formatted text with the 
+    - Section Title
+    - Name of the book
+    - Further information, from that event, if applicable*/
+[
+    {
+        "summary": "Tea & Chat on Zoom (book discussion)",
+        "start": {
+            "dateTime": "2026-01-11T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-01-11T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Disrupting Systems of Oppression</strong></p><p><strong>Book Selection:</strong> <em>America’s Racial Karma</em>. Dr. Larry Ward</p>"
+    },
+    {
+        "summary": "Listening Session w/ Dr. Larry Ward",
+        "start": {
+            "dateTime": "2026-01-19T15:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-01-19T16:30:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Disrupting Systems of Oppression</strong></p><p><strong>Book Selection:</strong> <em>America’s Racial Karma</em>. Dr. Larry Ward</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-01-26T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-01-26T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Disrupting Systems of Oppression</strong></p><p><strong>Book Selection:</strong> <em>America’s Racial Karma</em>. Dr. Larry Ward</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-02-08T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-02-08T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p>"
+    },
+    {
+        "summary": "Film Screening: Mulberry Tree",
+        "start": {
+            "dateTime": "2026-02-16T14:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-02-16T15:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p><p>Further Info: <a href=\"https:\/\/jennesluder.com\/yoga-for-social-change-film-screening-mulberry-tree-by-iliana-pagan-teitelbaum\/\">Click Here for Film Preview</a></p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-02-23T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-02-23T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-03-08T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-03-08T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p>"
+    },
+    {
+        "summary": "Listening Session TBD",
+        "start": {
+            "dateTime": "2026-03-16T14:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-03-16T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-03-23T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-03-23T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Hope as a Discipline</strong></p><p><strong>Book Selection:</strong> <em>Active Hope — How to Face the Mess We’re in Without Going Crazy</em>. Joanna Macy & Chris Johnstone</p>"
+    },
+    {
+        "summary": "Listening Session w/ Kaira Jewel Lingo",
+        "start": {
+            "dateTime": "2026-04-13T15:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-04-13T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Resilience & Refuge</strong></p><p><strong>Book Selection:</strong> <em>We Were Made For These Times</em> Kaira Jewel Lingo / <em>Healing Our Way Home</em>. Valerie Brown, Marisela Gomez</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-04-19T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-04-19T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Resilience & Refuge</strong></p><p><strong>Book Selection:</strong> <em>We Were Made For These Times</em> Kaira Jewel Lingo / <em>Healing Our Way Home</em>. Valerie Brown, Marisela Gomez</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-05-04T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-05-04T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Resilience & Refuge</strong></p><p><strong>Book Selection:</strong> <em>We Were Made For These Times</em> Kaira Jewel Lingo / <em>Healing Our Way Home</em>. Valerie Brown, Marisela Gomez</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-05-17T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-05-17T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Resilience & Refuge</strong></p><p><strong>Book Selection:</strong> <em>We Were Made For These Times</em> Kaira Jewel Lingo / <em>Healing Our Way Home</em>. Valerie Brown, Marisela Gomez</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-06-01T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-06-01T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Resilience & Refuge</strong></p><p><strong>Book Selection:</strong> <em>We Were Made For These Times</em> Kaira Jewel Lingo / <em>Healing Our Way Home</em>. Valerie Brown, Marisela Gomez</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-06-14T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-06-14T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Right View and Mindful Action</strong></p><p><strong>Book Selection:</strong> <em>Emergent Strategy—Shaping Change, Changing Worlds</em>. Adrienne Maree Brown</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-06-29T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-06-29T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Right View and Mindful Action</strong></p><p><strong>Book Selection:</strong> <em>Emergent Strategy—Shaping Change, Changing Worlds</em>. Adrienne Maree Brown</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-07-12T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-07-12T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Right View and Mindful Action</strong></p><p><strong>Book Selection:</strong> <em>Emergent Strategy—Shaping Change, Changing Worlds</em>. Adrienne Maree Brown</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-07-27T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-07-27T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Right View and Mindful Action</strong></p><p><strong>Book Selection:</strong> <em>Emergent Strategy—Shaping Change, Changing Worlds</em>. Adrienne Maree Brown</p>"
+    },
+    {
+        "summary": "Listening Session TBD",
+        "start": {
+            "dateTime": "2026-08-10T15:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-08-10T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Community-Building</strong></p><p><strong>Book Selection:</strong> <em>The Power of Bridging / Belonging without Othering</em>. john a. powell</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-08-16T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-08-16T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Community-Building</strong></p><p><strong>Book Selection:</strong> <em>The Power of Bridging / Belonging without Othering</em>. john a. powell</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-08-24T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-08-24T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Community-Building</strong></p><p><strong>Book Selection:</strong> <em>The Power of Bridging / Belonging without Othering</em>. john a. powell</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-09-13T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-09-13T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Community-Building</strong></p><p><strong>Book Selection:</strong> <em>The Power of Bridging / Belonging without Othering</em>. john a. powell</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-09-28T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-09-28T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>Community-Building</strong></p><p><strong>Book Selection:</strong> <em>The Power of Bridging / Belonging without Othering</em>. john a. powell</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-10-11T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-10-11T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building</strong></p><p><strong>Book Selection:</strong> <em>The Next American Revolution</em>. Grace Lee Boggs</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-10-26T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-10-26T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building</strong></p><p><strong>Book Selection:</strong> <em>The Next American Revolution</em>. Grace Lee Boggs</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-11-08T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-11-08T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building</strong></p><p><strong>Book Selection:</strong> <em>The Next American Revolution</em>. Grace Lee Boggs</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-11-30T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-11-30T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building</strong></p><p><strong>Book Selection:</strong> <em>The Next American Revolution</em>. Grace Lee Boggs</p>"
+    },
+    {
+        "summary": "Tea & Chat (book discussion)",
+        "start": {
+            "dateTime": "2026-12-13T16:00:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-12-13T17:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building Part Deux</strong></p><p><strong>Book Selection:</strong> <em>Let This Radicalize You</em>. Kelly Hayes & Mariame Kaba</p>"
+    },
+    {
+        "summary": "Resource & Refuge (centering practice + reflections)",
+        "start": {
+            "dateTime": "2026-12-28T18:30:00",
+            "timeZone": "America/New_York"
+        },
+        "end": {
+            "dateTime": "2026-12-28T20:00:00",
+            "timeZone": "America/New_York"
+        },
+        "location": "See Email for Zoom link",
+        "description": "<p><strong>(R)evolution-Building Part Deux</strong></p><p><strong>Book Selection:</strong> <em>Let This Radicalize You</em>. Kelly Hayes & Mariame Kaba</p>"
+    }
+]
