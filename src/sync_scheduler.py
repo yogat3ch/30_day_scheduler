@@ -29,17 +29,14 @@ def get_services():
 
 def parse_time_est(header_str):
     """
-    Extracts time from headers like '7 am CST | 1 pm GMT | 8 am EST'
+    Extracts time(s) from headers like '7 am CST | 1 pm GMT | 8 am EST'
+    or '7 am - 7:45 am EST | 6 am CST'.
     Specifically looks for the 'am/pm EST' part as requested.
+    Returns (start_iso, end_iso, duration_mins) or (None, None, None).
     """
-    match = re.search(r'(\d+(?::\d+)?\s*[ap]m)\s*EST', header_str, re.IGNORECASE)
-    if not match:
-        # Fallback to first available time if EST isn't found
-        match = re.search(r'(\d+(?::\d+)?\s*[ap]m)', header_str, re.IGNORECASE)
-    
-    if match:
-        time_str = match.group(1).lower().replace(' ', '')
-        # Convert to 24h format for ISO
+
+    def to_24h(time_str):
+        time_str = time_str.lower().replace(' ', '')
         if 'pm' in time_str and '12' not in time_str:
             h = int(time_str.replace('pm', '').split(':')[0]) + 12
             m = time_str.replace('pm', '').split(':')[1] if ':' in time_str else '00'
@@ -52,7 +49,36 @@ def parse_time_est(header_str):
             h = int(time_part.split(':')[0])
             m = time_part.split(':')[1] if ':' in time_part else '00'
             return f"{h:02d}:{m}"
-    return None
+
+    # Try range first: 7 am - 7:45 am EST
+    range_match = re.search(r'(\d+(?::\d+)?\s*[ap]m)\s*-\s*(\d+(?::\d+)?\s*[ap]m)\s*EST', header_str, re.IGNORECASE)
+    if not range_match:
+        # Fallback to single time: 7 am EST
+        single_match = re.search(r'(\d+(?::\d+)?\s*[ap]m)\s*EST', header_str, re.IGNORECASE)
+        if not single_match:
+            # Fallback to first available time if EST isn't found
+            single_match = re.search(r'(\d+(?::\d+)?\s*[ap]m)', header_str, re.IGNORECASE)
+        
+        if single_match:
+            start_iso = to_24h(single_match.group(1))
+            # Default to 10 mins
+            start_dt = datetime.datetime.strptime(start_iso, "%H:%M")
+            end_dt = start_dt + datetime.timedelta(minutes=10)
+            return start_iso, end_dt.strftime("%H:%M"), 10
+    else:
+        start_iso = to_24h(range_match.group(1))
+        end_iso = to_24h(range_match.group(2))
+        
+        start_dt = datetime.datetime.strptime(start_iso, "%H:%M")
+        end_dt = datetime.datetime.strptime(end_iso, "%H:%M")
+        # Handle overnight ranges if any (though unlikely for this use case)
+        if end_dt <= start_dt:
+            end_dt += datetime.timedelta(days=1)
+        
+        duration = int((end_dt - start_dt).total_seconds() / 60)
+        return start_iso, end_iso, duration
+
+    return None, None, None
 
 def col_to_letter(n):
     string = ""
@@ -75,23 +101,31 @@ def prepare_event_body(row, template_text):
     """
     Prepares the event JSON body by substituting variables into the template.
     """
-    # row is expected to have 'Date', 'Start', 'Day', and 'Contact'
-    start_dt = datetime.datetime.strptime(f"{row['Date']} {row['Start']}", "%Y-%m-%d %H:%M")
-    end_dt = start_dt + datetime.timedelta(minutes=10)
-    end_time_iso = end_dt.strftime("%H:%M")
-    
     vars = {
         "date": row['Date'],
         "day_of_week": row['Day'],
         "time_iso": row['Start'],
-        "end_time_iso": end_time_iso,
+        "end_time_iso": row['End'],
+        "duration": row['Duration']
     }
     vars.update(row['Contact'])
     
     event_json_str = template_text
     for key, val in vars.items():
-        escaped_val = json.dumps(str(val))[1:-1]
-        event_json_str = event_json_str.replace(f"{{{key}}}", escaped_val)
+        # Properly escape the value for JSON
+        escaped_val = json.dumps(str(val))
+        # If the placeholder is inside quotes like "{key}", we want to replace the whole thing 
+        # but since our template has "{key}" and we want to preserve quotes if we were doing simple string replace,
+        # but here we are substituting into a JSON structure.
+        # The existing logic did: escaped_val = json.dumps(str(val))[1:-1]
+        # which strips the surrounding quotes. This is only safe for single-line strings.
+        # For multiline strings, we need to be more careful.
+        
+        # Actually, let's keep it simple: the template uses "{key}". 
+        # If we replace {key} with the contents of json.dumps(val)[1:-1], it should work 
+        # because json.dumps handles newlines and control characters as \n, \r, etc.
+        safe_val = json.dumps(str(val))[1:-1]
+        event_json_str = event_json_str.replace(f"{{{key}}}", safe_val)
     
     return JsoncParser.parse_str(event_json_str)
 
@@ -141,12 +175,12 @@ def main(dry_run=True, test_teacher=None, limit=None):
 
     # Header is at index 2 (Row 3)
     header_row = signup_rows[2]
-    time_slots = {} # col_index -> time_iso
+    time_slots = {} # col_index -> (start_iso, end_iso, duration)
     for i, header in enumerate(header_row):
         if i < 2: continue # Skip first two columns (Instructions/Dates)
-        parsed_time = parse_time_est(header)
-        if parsed_time:
-            time_slots[i] = parsed_time
+        start_iso, end_iso, duration = parse_time_est(header)
+        if start_iso:
+            time_slots[i] = (start_iso, end_iso, duration)
 
     # 3. Iterate and Process
     errors = []
@@ -181,19 +215,15 @@ def main(dry_run=True, test_teacher=None, limit=None):
                 continue
             
             contact_info = teacher_map[teacher_name]
-            start_time_iso = time_slots[col_idx]
+            start_time_iso, end_time_iso, duration = time_slots[col_idx]
             
-            # Calculate end time (10 mins later)
-            start_dt = datetime.datetime.strptime(f"{date_str} {start_time_iso}", "%Y-%m-%d %H:%M")
-            end_dt = start_dt + datetime.timedelta(minutes=10)
-            end_time_iso = end_dt.strftime("%H:%M")
-
             # Prepare substitution variables
             vars = {
                 "date": date_str,
                 "day_of_week": day_of_week,
                 "time_iso": start_time_iso,
                 "end_time_iso": end_time_iso,
+                "duration": duration
             }
             vars.update(contact_info) # Adds {First Name}, {Last Name}, etc.
 
@@ -207,6 +237,12 @@ def main(dry_run=True, test_teacher=None, limit=None):
             
             try:
                 event_data = JsoncParser.parse_str(event_json_str)
+                
+                # Test Mode Enhancements: Prefix summary and remove attendees if --limit is used
+                if limit is not None:
+                    event_data['summary'] = f"TEST: {event_data.get('summary', '')}"
+                    event_data['attendees'] = []
+
                 events_to_create.append(event_data)
 
                 # Collect preview info

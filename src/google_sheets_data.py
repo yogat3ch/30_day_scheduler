@@ -45,9 +45,9 @@ def fetch_google_sheets_data(sheets_service, spreadsheet_id, signup_sheet, conta
         time_slots = {}
         for i, header in enumerate(header_row):
             if i < 2: continue
-            parsed_time = parse_time_est(header)
-            if parsed_time:
-                time_slots[i] = parsed_time
+            start_iso, end_iso, duration = parse_time_est(header)
+            if start_iso:
+                time_slots[i] = (start_iso, end_iso, duration)
         
         pending_events = []
         
@@ -69,18 +69,20 @@ def fetch_google_sheets_data(sheets_service, spreadsheet_id, signup_sheet, conta
                 if teacher_name not in teacher_map: continue
                 
                 contact_info = teacher_map[teacher_name]
-                start_time_iso = time_slots[col_idx]
+                start_time_iso, end_time_iso, duration = time_slots[col_idx]
                 
                 start_dt = datetime.datetime.strptime(f"{date_str} {start_time_iso}", "%Y-%m-%d %H:%M")
                 
                 pending_events.append({
-                    "Summary": f"10-Minute Guided Session: {teacher_name}",
+                    "Summary": f"{duration}-Minute Guided Session: {teacher_name}",
                     "Begin": start_dt.isoformat(),
                     "Teacher": teacher_name,
                     "Contact": contact_info,
                     "Date": date_str,
                     "Day": day_of_week,
-                    "Start": start_time_iso
+                    "Start": start_time_iso,
+                    "End": end_time_iso,
+                    "Duration": duration
                 })
 
         df_pending = pd.DataFrame(pending_events)

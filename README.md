@@ -34,6 +34,7 @@ The recommended way to use this project is through the **[sync_scheduler.ipynb](
     - `SPREADSHEET_ID`: Set in the first cell of the notebook.
     - `CALENDAR_ID`: Set in the first cell of the notebook.
     - `_calendar_event_template.jsonc`: Customize the event body using `{Variable}` notation.
+    - **Header Format**: The script supports both single times (e.g., `7 am EST`) and time ranges (e.g., `7 am - 7:45 am EST`). Duration is calculated automatically (defaults to 10 mins). Use the `{duration}` variable in your template.
 
 ## 📖 Alternative: CLI Usage (Advanced)
 
@@ -49,7 +50,11 @@ python3 src/sync_scheduler.py --test
 python3 src/sync_scheduler.py --run
 ```
 
-**Limited Run:**
+**Enhanced Test Mode (Using Limit):**
+Running with the `--limit` argument triggers an enhanced **Test Mode**:
+-   **Prefixed Summaries**: All event summaries are prefixed with `TEST:` for easy identification.
+-   **No Guests**: All guest attendees are removed to prevent notifications to teachers during testing.
+
 ```bash
 python3 src/sync_scheduler.py --run --limit 5
 ```
