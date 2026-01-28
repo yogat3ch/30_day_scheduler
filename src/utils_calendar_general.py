@@ -99,3 +99,43 @@ def delete_events_from_csv(csv_path, service, calendar_id):
                 print(f"Error deleting {event_id}: {e}")
         except Exception as e:
             print(f"Error deleting {event_id}: {e}")
+
+def write_events_to_csv(events, filename):
+    """
+    Writes Google calendar event data to a csv file.
+    
+    Args:
+        events (list): List of event dictionaries returned by fetch_calendar_events.
+        filename (str): The path to the CSV file to be created.
+    """
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    
+    data = []
+    for ev in events:
+        summary = ev.get('summary', '')
+        start_info = ev.get('start', {})
+        
+        # Get datetime string
+        dt_str = start_info.get('dateTime') or start_info.get('date')
+        if not dt_str:
+            continue
+            
+        dt = pd.to_datetime(dt_str)
+        
+        # Extract Teacher: text following the ':' in summary
+        teacher = ''
+        if ':' in summary:
+            teacher = summary.split(':', 1)[1].strip()
+            
+        data.append({
+            'Summary': summary,
+            'Begin (Datetime)': dt_str,
+            'Teacher': teacher,
+            'Date': dt.strftime('%Y-%m-%d'),
+            'Day': dt.strftime('%A'),
+            'Start': dt.strftime('%H:%M')
+        })
+        
+    df = pd.DataFrame(data)
+    df.to_csv(filename, index=False)
+    print(f"Exported {len(df)} events to {filename}")
