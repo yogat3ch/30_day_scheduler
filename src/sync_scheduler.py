@@ -97,6 +97,42 @@ def validate_template(template_path):
         print(f"Details: {str(e)}")
         raise SystemExit(1)
 
+def create_scheduled_events(calendar_service, calendar_id, events_to_create, csv_path):
+    """
+    Creates a batch of events and logs them to a CSV file.
+    Breaks on the first failure and prints the offending event body.
+    """
+    created_records = []
+    for ev in events_to_create:
+        try:
+            created_event = calendar_service.events().insert(calendarId=calendar_id, body=ev).execute()
+            print(f"Created event: {created_event.get('htmlLink')}")
+            created_records.append({
+                'Summary': created_event.get('summary'),
+                'ID': created_event.get('id'),
+                'Begin': created_event['start'].get('dateTime') or created_event['start'].get('date')
+            })
+            
+            # Incremental save
+            new_row = pd.DataFrame([created_records[-1]])
+            if os.path.exists(csv_path):
+                new_row.to_csv(csv_path, mode='a', header=False, index=False)
+            else:
+                new_row.to_csv(csv_path, index=False)
+                
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+            print(f"Offending Event Body:\n{json.dumps(ev, indent=2)}")
+            print("Stopping execution due to API failure.")
+            break
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            print(f"Offending Event Body:\n{json.dumps(ev, indent=2)}")
+            print("Stopping execution due to unexpected failure.")
+            break
+            
+    return created_records
+
 def prepare_event_body(row, template_text):
     """
     Prepares the event JSON body by substituting variables into the template.
@@ -289,25 +325,10 @@ def main(dry_run=True, test_teacher=None, limit=None):
             return
 
         # 6. Create Events
-        created_records = []
-        for ev in events_to_create:
-            try:
-                created_event = calendar_service.events().insert(calendarId=CALENDAR_ID, body=ev).execute()
-                print(f"Created event: {created_event.get('htmlLink')}")
-                created_records.append({
-                    'Summary': created_event.get('summary'),
-                    'ID': created_event.get('id')
-                })
-            except HttpError as error:
-                print(f"An error occurred: {error}")
+        created_records = create_scheduled_events(calendar_service, CALENDAR_ID, events_to_create, CREATED_EVENTS_CSV)
         
         if created_records:
-            df_created = pd.DataFrame(created_records)
-            if os.path.exists(CREATED_EVENTS_CSV):
-                df_created.to_csv(CREATED_EVENTS_CSV, mode='a', header=False, index=False)
-            else:
-                df_created.to_csv(CREATED_EVENTS_CSV, index=False)
-            print(f"\nSuccessfully updated {CREATED_EVENTS_CSV} with {len(created_records)} new event records.")
+            print(f"\nSuccessfully created {len(created_records)} new events.")
     else:
         print("\n[DRY RUN] No events were created.")
 
